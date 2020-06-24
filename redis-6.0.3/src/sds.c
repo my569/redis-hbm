@@ -227,20 +227,36 @@ sds sdsMakeRoomFor(sds s, size_t addlen) {
     if (type == SDS_TYPE_5) type = SDS_TYPE_8;
 
     hdrlen = sdsHdrSize(type);
-    if (oldtype==type) {
-        newsh = s_realloc(sh, hdrlen+newlen+1);
-        if (newsh == NULL) return NULL;
-        s = (char*)newsh+hdrlen;
-    } else {
-        /* Since the header size changes, need to move the string forward,
-         * and can't use realloc */
-        newsh = s_malloc(hdrlen+newlen+1);
+    if (hdrlen+newlen+1 > HBM_HOT_SIZE){
+	printf("--size(%lu)>=hot_size(%lu),store in hbm", hdrlen+newlen+1, HBM_HOT_SIZE);
+	// hbm的代码没有实现realloc函数
+        newsh = sram_malloc(hdrlen+newlen+1);
         if (newsh == NULL) return NULL;
         memcpy((char*)newsh+hdrlen, s, len+1);
-        s_free(sh);
+	if(in_hbmspace(sh)) sram_free(sh);
+	else s_free(sh);
         s = (char*)newsh+hdrlen;
         s[-1] = type;
         sdssetlen(s, len);
+    }else {
+        if (oldtype==type) {
+            newsh = s_realloc(sh, hdrlen+newlen+1);
+            if (newsh == NULL) return NULL;
+            s = (char*)newsh+hdrlen;
+        } else {
+            /* Since the header size changes, need to move the string forward,
+             * and can't use realloc */
+            newsh = s_malloc(hdrlen+newlen+1);
+            if (newsh == NULL) return NULL;
+            memcpy((char*)newsh+hdrlen, s, len+1);
+            // s_free(sh);
+	    if(in_hbmspace(sh)) sram_free(sh);
+	    else s_free(sh);
+            
+	    s = (char*)newsh+hdrlen;
+            s[-1] = type;
+            sdssetlen(s, len);
+        }
     }
     sdssetalloc(s, newlen);
     return s;

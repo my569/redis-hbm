@@ -549,11 +549,15 @@ int zmalloc_test(int argc, char **argv) {
  * author:nejidev
  * date:2019-12-05
  */
-//#include "sram.h"
-
+// #include "sram.h"
+//
 //static stack or physics memory address
 static char mem[SRAM_POOLS_HEAP_SIZE] = {0};
 static sram_mem_chunk *pools_mem_head = NULL;
+
+int in_hbmspace(void *ptr){
+	return (void*)mem <= ptr && ptr <= (void*)(mem + SRAM_POOLS_HEAP_SIZE);
+}
 
 static sram_mem_chunk *sram_pools_init()
 {

@@ -126,6 +126,13 @@ int zmalloc_test(int argc, char **argv);
 // 256M
 #define SRAM_POOLS_HEAP_SIZE  (256*1024*1024)														    
 
+#ifndef __HBM_MALLOC
+#define __HBM_MALLOC
+
+#define HBM_HOT_SIZE 50
+
+#endif
+
 typedef struct sram_mem_chunk {
 	void  *alloc;
 	size_t alloc_size;
@@ -138,5 +145,6 @@ typedef struct sram_mem_chunk {
 void *sram_malloc(size_t size);
 void sram_free(void *ptr);
 void sram_pools_dump();
+int in_hbmspace(void *ptr);
 
 #endif
