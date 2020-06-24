@@ -1755,6 +1755,8 @@ SPOP_MOVE_STRATEGY_MUL	t_set.c	400;"	d	file:
 SPT	setproctitle.c	/^} SPT;$/;"	v	typeref:struct:__anon46	file:
 SPT_MAXTITLE	setproctitle.c	217;"	d	file:
 SPT_MIN	setproctitle.c	71;"	d	file:
+SRAM_POOLS_CHUNK_SIZE	zmalloc.h	125;"	d
+SRAM_POOLS_HEAP_SIZE	zmalloc.h	126;"	d
 SRANDMEMBER_SUB_STRATEGY_MUL	t_set.c	612;"	d	file:
 SRCCOLOR	Makefile	/^SRCCOLOR="\\033[33m"$/;"	m
 SRI_FAILOVER_IN_PROGRESS	sentinel.c	69;"	d	file:
@@ -1979,6 +1981,7 @@ __SDS_ALLOC_H__	sdsalloc.h	40;"	d
 __SDS_H	sds.h	34;"	d
 __SLOWLOG_H__	slowlog.h	31;"	d
 __SPARKLINE_H	sparkline.h	31;"	d
+__SRAM_H	zmalloc.h	121;"	d
 __TESTHELP_H	testhelp.h	40;"	d
 __ZMALLOC_H	zmalloc.h	32;"	d
 __arm64__	config.h	217;"	d
@@ -2220,6 +2223,8 @@ alloc	sds.h	/^    uint16_t alloc; \/* excluding the header and null terminator *
 alloc	sds.h	/^    uint32_t alloc; \/* excluding the header and null terminator *\/$/;"	m	struct:sdshdr32
 alloc	sds.h	/^    uint64_t alloc; \/* excluding the header and null terminator *\/$/;"	m	struct:sdshdr64
 alloc	sds.h	/^    uint8_t alloc; \/* excluding the header and null terminator *\/$/;"	m	struct:sdshdr8
+alloc	zmalloc.h	/^	void  *alloc;$/;"	m	struct:sram_mem_chunk
+alloc_size	zmalloc.h	/^	size_t alloc_size;$/;"	m	struct:sram_mem_chunk
 allocator_active	server.h	/^    size_t allocator_active;$/;"	m	struct:malloc_stats
 allocator_allocated	server.h	/^    size_t allocator_allocated;$/;"	m	struct:malloc_stats
 allocator_frag	server.h	/^    float allocator_frag;$/;"	m	struct:redisMemOverhead
@@ -2582,10 +2587,12 @@ checkUnsignedBitfieldOverflow	bitops.c	/^int checkUnsignedBitfieldOverflow(uint6
 child_info_data	server.h	/^    } child_info_data;$/;"	m	struct:redisServer	typeref:struct:redisServer::__anon38
 child_info_pipe	server.h	/^    int child_info_pipe[2];         \/* Pipe used to write the child_info_data. *\/$/;"	m	struct:redisServer
 children	scripting.c	/^    list *children; \/* All forked debugging sessions pids. *\/$/;"	m	struct:ldbState	file:
+chunk_size	zmalloc.h	/^	size_t chunk_size;$/;"	m	struct:sram_mem_chunk
 cinfo	acl.c	/^    sds cinfo;          \/* Client info (last client if updated). *\/$/;"	m	struct:ACLLogEntry	file:
 ciphers	server.h	/^    char *ciphers;$/;"	m	struct:redisTLSContextConfig
 ciphersuites	server.h	/^    char *ciphersuites;$/;"	m	struct:redisTLSContextConfig
 cksum	rio.h	/^    uint64_t cksum, flags;$/;"	m	struct:_rio
+cleanup	zmalloc.h	/^	size_t cleanup; \/\/0 cleanup 1 alloc$/;"	m	struct:sram_mem_chunk
 clearNodeFailureIfNeeded	cluster.c	/^void clearNodeFailureIfNeeded(clusterNode *node) {$/;"	f
 clearReplicationId2	replication.c	/^void clearReplicationId2(void) {$/;"	f
 cliAuth	redis-cli.c	/^static int cliAuth(void) {$/;"	f	file:
@@ -3145,6 +3152,7 @@ ctx	module.c	/^    RedisModuleCtx *ctx;$/;"	m	struct:RedisModuleKey	file:
 ctx	module.c	/^    RedisModuleCtx *ctx;$/;"	m	struct:__anon25	file:
 ctx	server.h	/^    struct RedisModuleCtx *ctx; \/* Optional context, see RM_GetContextFromIO()*\/$/;"	m	struct:RedisModuleIO	typeref:struct:RedisModuleIO::RedisModuleCtx
 current	quicklist.h	/^    quicklistNode *current;$/;"	m	struct:quicklistIter
+current	zmalloc.h	/^	size_t current;$/;"	m	struct:sram_mem_chunk
 currentEpoch	cluster.h	/^    uint64_t currentEpoch;  \/* The epoch accordingly to the sending node. *\/$/;"	m	struct:__anon11
 currentEpoch	cluster.h	/^    uint64_t currentEpoch;$/;"	m	struct:clusterState
 current_client	server.h	/^    client *current_client;     \/* Current client executing the command. *\/$/;"	m	struct:redisServer
@@ -4487,6 +4495,7 @@ mb_delim	redis-cli.c	/^    sds mb_delim;$/;"	m	struct:config	file:
 mbulkhdr	server.h	/^    *mbulkhdr[OBJ_SHARED_BULKHDR_LEN], \/* "*<value>\\r\\n" *\/$/;"	m	struct:sharedObjectsStruct
 mdouleClusterNodeInfo	module.c	/^} mdouleClusterNodeInfo;$/;"	t	typeref:struct:moduleClusterNodeInfo	file:
 med3	pqsort.c	/^med3(char *a, char *b, char *c,$/;"	f	file:
+mem	zmalloc.c	/^static char mem[SRAM_POOLS_HEAP_SIZE] = {0};$/;"	v	file:
 mem_usage	redismodule.h	/^    RedisModuleTypeMemUsageFunc mem_usage;$/;"	m	struct:RedisModuleTypeMethods
 mem_usage	server.h	/^    moduleTypeMemUsageFunc mem_usage;$/;"	m	struct:RedisModuleType
 member	geo.h	/^    char *member;$/;"	m	struct:geoPoint
@@ -4729,6 +4738,7 @@ next	module.c	/^    struct moduleClusterReceiver *next;$/;"	m	struct:moduleClust
 next	modules/hellotype.c	/^    struct HelloTypeNode *next;$/;"	m	struct:HelloTypeNode	typeref:struct:HelloTypeNode::HelloTypeNode	file:
 next	quicklist.h	/^    struct quicklistNode *next;$/;"	m	struct:quicklistNode	typeref:struct:quicklistNode::quicklistNode
 next	rand.c	/^static void next(void) {$/;"	f	file:
+next	zmalloc.h	/^	struct sram_mem_chunk *next;$/;"	m	struct:sram_mem_chunk	typeref:struct:sram_mem_chunk::sram_mem_chunk
 nextEntry	dict.h	/^    dictEntry *entry, *nextEntry;$/;"	m	struct:dictIterator
 next_client_id	server.h	/^    _Atomic uint64_t next_client_id; \/* Next client unique ID. Incremental. *\/$/;"	m	struct:redisServer
 next_num	setcpuaffinity.c	/^static int next_num(const char *str, char **end, int *result) {$/;"	f	file:
@@ -4907,6 +4917,7 @@ pong	server.h	/^    robj *crlf, *ok, *err, *emptybulk, *czero, *cone, *pong, *sp
 pong_received	cluster.h	/^    mstime_t pong_received;  \/* Unix time we received the pong *\/$/;"	m	struct:clusterNode
 pong_received	cluster.h	/^    uint32_t pong_received;$/;"	m	struct:__anon1
 poolAllocRelease	module.c	/^void poolAllocRelease(RedisModuleCtx *ctx) {$/;"	f
+pools_mem_head	zmalloc.c	/^static sram_mem_chunk *pools_mem_head = NULL;$/;"	v	file:
 pop	ziplist.c	/^static unsigned char *pop(unsigned char *zl, int where) {$/;"	f	file:
 popGenericCommand	t_list.c	/^void popGenericCommand(client *c, int where) {$/;"	f
 populateCommandTable	server.c	/^void populateCommandTable(void) {$/;"	f
@@ -6031,6 +6042,12 @@ spt_copyenv	setproctitle.c	/^static int spt_copyenv(char *oldenv[]) {$/;"	f	file
 spt_init	setproctitle.c	/^void spt_init(int argc, char *argv[]) {$/;"	f
 spt_min	setproctitle.c	/^static inline size_t spt_min(size_t a, size_t b) {$/;"	f	file:
 sptr	t_zset.c	/^                unsigned char *eptr, *sptr;$/;"	m	struct:__anon50::__anon51::_iterzset::__anon54	file:
+sram_free	zmalloc.c	/^void sram_free(void *ptr)$/;"	f
+sram_malloc	zmalloc.c	/^void *sram_malloc(size_t size)$/;"	f
+sram_mem_chunk	zmalloc.h	/^typedef struct sram_mem_chunk {$/;"	s
+sram_mem_chunk	zmalloc.h	/^} sram_mem_chunk;$/;"	t	typeref:struct:sram_mem_chunk
+sram_pools_dump	zmalloc.c	/^void sram_pools_dump()$/;"	f
+sram_pools_init	zmalloc.c	/^static sram_mem_chunk *sram_pools_init()$/;"	f	file:
 srandmemberCommand	t_set.c	/^void srandmemberCommand(client *c) {$/;"	f
 srandmemberWithCountCommand	t_set.c	/^void srandmemberWithCountCommand(client *c) {$/;"	f
 src	scripting.c	/^    sds *src;   \/* Lua script source code split by line. *\/$/;"	m	struct:ldbState	file:
