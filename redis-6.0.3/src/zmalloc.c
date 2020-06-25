@@ -192,6 +192,14 @@ size_t zmalloc_usable(void *ptr) {
 #endif
 
 void zfree(void *ptr) {
+    // mybegin
+    if (in_hbmspace(ptr)){
+        sram_free(ptr);
+	return;
+    }
+    // myend
+
+
 #ifndef HAVE_MALLOC_SIZE
     void *realptr;
     size_t oldsize;

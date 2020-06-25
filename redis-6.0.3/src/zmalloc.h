@@ -129,7 +129,7 @@ int zmalloc_test(int argc, char **argv);
 #ifndef __HBM_MALLOC
 #define __HBM_MALLOC
 
-#define HBM_HOT_SIZE 50
+#define HBM_HOT_SIZE 5
 
 #endif
 

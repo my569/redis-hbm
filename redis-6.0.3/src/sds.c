@@ -227,6 +227,7 @@ sds sdsMakeRoomFor(sds s, size_t addlen) {
     if (type == SDS_TYPE_5) type = SDS_TYPE_8;
 
     hdrlen = sdsHdrSize(type);
+    // mybegin
     if (hdrlen+newlen+1 > HBM_HOT_SIZE){
 	printf("--size(%lu)>=hot_size(%lu),store in hbm", hdrlen+newlen+1, HBM_HOT_SIZE);
 	// hbm的代码没有实现realloc函数
@@ -258,6 +259,7 @@ sds sdsMakeRoomFor(sds s, size_t addlen) {
             sdssetlen(s, len);
         }
     }
+    // myend
     sdssetalloc(s, newlen);
     return s;
 }
