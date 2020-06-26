@@ -129,22 +129,22 @@ int zmalloc_test(int argc, char **argv);
 #ifndef __HBM_MALLOC
 #define __HBM_MALLOC
 
-#define HBM_HOT_SIZE 5
+#define HBM_HOT_SIZE 100
 
 #endif
 
-typedef struct sram_mem_chunk {
+typedef struct hbm_mem_chunk {
 	void  *alloc;
 	size_t alloc_size;
 	size_t chunk_size;
 	size_t current;
 	size_t cleanup; //0 cleanup 1 alloc
-	struct sram_mem_chunk *next;
-} sram_mem_chunk;
+	struct hbm_mem_chunk *next;
+} hbm_mem_chunk;
 
-void *sram_malloc(size_t size);
-void sram_free(void *ptr);
-void sram_pools_dump();
+void *hbm_malloc(size_t size);
+void hbm_free(void *ptr);
+void hbm_pools_dump();
 int in_hbmspace(void *ptr);
 
 #endif

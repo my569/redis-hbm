@@ -519,6 +519,7 @@ HAVE_SETPROCTITLE	setproctitle.c	45;"	d	file:
 HAVE_SYNC_FILE_RANGE	config.h	104;"	d
 HAVE_SYNC_FILE_RANGE	config.h	108;"	d
 HAVE_TASKINFO	config.h	61;"	d
+HBM_HOT_SIZE	zmalloc.h	132;"	d
 HIGH	rand.c	49;"	d	file:
 HI_BIT	rand.c	66;"	d	file:
 HLL_ALPHA_INF	hyperloglog.c	389;"	d	file:
@@ -1640,7 +1641,7 @@ RevokeCommand_RedisCommand	modules/helloacl.c	/^int RevokeCommand_RedisCommand(R
 SA_ONSTACK	debug.c	52;"	d	file:
 SDS_HDR	sds.h	84;"	d
 SDS_HDR_VAR	sds.h	83;"	d
-SDS_LLSTR_SIZE	sds.c	449;"	d	file:
+SDS_LLSTR_SIZE	sds.c	467;"	d	file:
 SDS_MAX_PREALLOC	sds.h	36;"	d
 SDS_NOINIT	sds.c	/^const char *SDS_NOINIT = "SDS_NOINIT";$/;"	v
 SDS_TYPE_16	sds.h	78;"	d
@@ -1756,7 +1757,7 @@ SPT	setproctitle.c	/^} SPT;$/;"	v	typeref:struct:__anon46	file:
 SPT_MAXTITLE	setproctitle.c	217;"	d	file:
 SPT_MIN	setproctitle.c	71;"	d	file:
 SRAM_POOLS_CHUNK_SIZE	zmalloc.h	125;"	d
-SRAM_POOLS_HEAP_SIZE	zmalloc.h	126;"	d
+SRAM_POOLS_HEAP_SIZE	zmalloc.h	127;"	d
 SRANDMEMBER_SUB_STRATEGY_MUL	t_set.c	612;"	d	file:
 SRCCOLOR	Makefile	/^SRCCOLOR="\\033[33m"$/;"	m
 SRI_FAILOVER_IN_PROGRESS	sentinel.c	69;"	d	file:
@@ -1854,12 +1855,12 @@ UNUSED	intset.c	351;"	d	file:
 UNUSED	quicklist.c	1547;"	d	file:
 UNUSED	redis-benchmark.c	54;"	d	file:
 UNUSED	redis-cli.c	64;"	d	file:
-UNUSED	sds.c	1131;"	d	file:
+UNUSED	sds.c	1149;"	d	file:
 UNUSED	server.h	346;"	d
 UNUSED	sha1.c	203;"	d	file:
 UNUSED	util.c	922;"	d	file:
 UNUSED	zipmap.c	407;"	d	file:
-UNUSED	zmalloc.c	527;"	d	file:
+UNUSED	zmalloc.c	535;"	d	file:
 USER_COMMAND_BITS_COUNT	server.h	722;"	d
 USER_FLAG_ALLCOMMANDS	server.h	729;"	d
 USER_FLAG_ALLKEYS	server.h	728;"	d
@@ -1963,6 +1964,7 @@ __CONFIG_H	config.h	31;"	d
 __DICT_H	dict.h	39;"	d
 __ENDIANCONV_H	endianconv.h	34;"	d
 __GEO_H__	geo.h	2;"	d
+__HBM_MALLOC	zmalloc.h	130;"	d
 __INTSET_H	intset.h	32;"	d
 __LATENCY_H	latency.h	35;"	d
 __LISTPACK_H	listpack.h	36;"	d
@@ -3807,6 +3809,7 @@ hashTypeSet	t_hash.c	/^int hashTypeSet(robj *o, sds field, sds value, int flags)
 hashTypeTryConversion	t_hash.c	/^void hashTypeTryConversion(robj *o, robj **argv, int start, int end) {$/;"	f
 hash_max_ziplist_entries	server.h	/^    size_t hash_max_ziplist_entries;$/;"	m	struct:redisServer
 hash_max_ziplist_value	server.h	/^    size_t hash_max_ziplist_value;$/;"	m	struct:redisServer
+hbm_memory	zmalloc.c	/^static size_t hbm_memory = 0;$/;"	v	file:
 hdelCommand	t_hash.c	/^void hdelCommand(client *c) {$/;"	f
 head	adlist.h	/^    listNode *head;$/;"	m	struct:list
 head	modules/hellotype.c	/^    struct HelloTypeNode *head;$/;"	m	struct:HelloTypeObject	typeref:struct:HelloTypeObject::HelloTypeNode	file:
@@ -3892,6 +3895,7 @@ importing_count	redis-cli.c	/^    int importing_count; \/* Length of the importi
 importing_slots_from	cluster.h	/^    clusterNode *importing_slots_from[CLUSTER_SLOTS];$/;"	m	struct:clusterState
 in_call	module.c	/^    int in_call;    \/* RM_Call() nesting level *\/$/;"	m	struct:RedisModule	file:
 in_dict_field	module.c	/^    int in_dict_field;  \/* indication that we're curreintly appending to a dict *\/$/;"	m	struct:RedisModuleInfoCtx	file:
+in_hbmspace	zmalloc.c	/^int in_hbmspace(void *ptr){$/;"	f
 in_hook	module.c	/^    int in_hook;    \/* Hooks callback nesting level for this module (0 or 1). *\/$/;"	m	struct:RedisModule	file:
 in_section	module.c	/^    int in_section;     \/* indication if we're in an active section or not *\/$/;"	m	struct:RedisModuleInfoCtx	file:
 incrCommand	t_string.c	/^void incrCommand(client *c) {$/;"	f
@@ -6411,7 +6415,9 @@ update_fn	config.c	/^    int (*update_fn)(char* val, char* prev, char **err); \/
 update_fn	config.c	/^    int (*update_fn)(int val, int prev, char **err); \/* Optional function to apply new value at runtime (generic doc above) *\/$/;"	m	struct:boolConfigData	file:
 update_fn	config.c	/^    int (*update_fn)(int val, int prev, char **err); \/* Optional function to apply new value at runtime (generic doc above) *\/$/;"	m	struct:enumConfigData	file:
 update_fn	config.c	/^    int (*update_fn)(long long val, long long prev, char **err); \/* Optional function to apply new value at runtime (generic doc above) *\/$/;"	m	struct:numericConfigData	file:
+update_zmalloc_hbm_alloc	zmalloc.c	566;"	d	file:
 update_zmalloc_stat_alloc	zmalloc.c	74;"	d	file:
+update_zmalloc_stat_free	zmalloc.c	572;"	d	file:
 update_zmalloc_stat_free	zmalloc.c	80;"	d	file:
 updated_slots	redis-benchmark.c	/^    int *updated_slots;         \/* Used by updateClusterSlotsConfiguration *\/$/;"	m	struct:clusterNode	file:
 updated_slots_count	redis-benchmark.c	/^    int updated_slots_count;    \/* Used by updateClusterSlotsConfiguration *\/$/;"	m	struct:clusterNode	file:

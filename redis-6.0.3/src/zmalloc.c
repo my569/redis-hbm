@@ -194,7 +194,7 @@ size_t zmalloc_usable(void *ptr) {
 void zfree(void *ptr) {
     // mybegin
     if (in_hbmspace(ptr)){
-        sram_free(ptr);
+        hbm_free(ptr);
 	return;
     }
     // myend
@@ -551,23 +551,42 @@ int zmalloc_test(int argc, char **argv) {
 #endif
 
 
+/**
+ * author:lmy
+ *
+ */
+
 
 
 /**
- * author:nejidev
- * date:2019-12-05
+ * author:lmy
  */
 // #include "sram.h"
 //
 //static stack or physics memory address
+
+#define update_zmalloc_hbm_alloc(__n) do { \
+    size_t _n = (__n); \
+    atomicIncr(hbm_used_memory,__n); \
+} while(0)
+
+#define update_zmalloc_hbm_free(__n) do { \
+    size_t _n = (__n); \
+    atomicDecr(hbm_used_memory,__n); \
+} while(0)
+
+static size_t hbm_used_memory = 0;
+pthread_mutex_t hbm_used_memory_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+//static size_t hbm_memory = 0;
 static char mem[SRAM_POOLS_HEAP_SIZE] = {0};
-static sram_mem_chunk *pools_mem_head = NULL;
+static hbm_mem_chunk *pools_mem_head = NULL;
 
 int in_hbmspace(void *ptr){
-	return (void*)mem <= ptr && ptr <= (void*)(mem + SRAM_POOLS_HEAP_SIZE);
+    return (void*)mem <= ptr && ptr <= (void*)(mem + SRAM_POOLS_HEAP_SIZE);
 }
 
-static sram_mem_chunk *sram_pools_init()
+static hbm_mem_chunk *hbm_pools_init()
 {
     int  i;
     int  chunk_total;
@@ -575,10 +594,10 @@ static sram_mem_chunk *sram_pools_init()
 
     // 只有在pools_mem_hear为空时才会初始化内存，否之就是直接返回pools_mem_head
     if ( ! pools_mem_head ) {
-        chunk_total = SRAM_POOLS_HEAP_SIZE / ( sizeof(sram_mem_chunk) +
+        chunk_total = SRAM_POOLS_HEAP_SIZE / ( sizeof(hbm_mem_chunk) +
                                                 SRAM_POOLS_CHUNK_SIZE );
-        base_alloc = mem + chunk_total * sizeof(sram_mem_chunk);
-        pools_mem_head = (sram_mem_chunk *)mem;
+        base_alloc = mem + chunk_total * sizeof(hbm_mem_chunk);
+        pools_mem_head = (hbm_mem_chunk *)mem;
 
         for ( i = 0; i < chunk_total; i++ ) {
             pools_mem_head[i].alloc      = (void *)(base_alloc +
@@ -594,13 +613,13 @@ static sram_mem_chunk *sram_pools_init()
     return pools_mem_head;
 }
 
-void *sram_malloc(size_t size)
+void *hbm_malloc(size_t size)
 {
     void *ptr = NULL;
     size_t alloc_size = 0;
-    sram_mem_chunk *mem_head    = sram_pools_init();
-    sram_mem_chunk *mem_alloc   = NULL;
-    sram_mem_chunk *mem_cleanup = NULL;
+    hbm_mem_chunk *mem_head    = hbm_pools_init();
+    hbm_mem_chunk *mem_alloc   = NULL;
+    hbm_mem_chunk *mem_cleanup = NULL;
 
     while ( mem_head ) {
         if ( 0 == mem_head->cleanup ) {
@@ -641,10 +660,10 @@ void *sram_malloc(size_t size)
     return ptr;
 }
 
-void sram_free(void *ptr)
+void hbm_free(void *ptr)
 {
     int free_size;
-    sram_mem_chunk *mem_head = sram_pools_init();
+    hbm_mem_chunk *mem_head = hbm_pools_init();
 
     if ( ! ptr ) return ;
 
@@ -664,9 +683,9 @@ void sram_free(void *ptr)
     }
 }
 
-void sram_pools_dump()
+void hbm_pools_dump()
 {
-    sram_mem_chunk *mem_head = sram_pools_init();
+    hbm_mem_chunk *mem_head = hbm_pools_init();
 
     while ( mem_head ) {
         printf("current:%ld alloc_size:%ld cleanup:%ld \n", mem_head->current,

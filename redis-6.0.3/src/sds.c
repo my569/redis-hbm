@@ -229,12 +229,12 @@ sds sdsMakeRoomFor(sds s, size_t addlen) {
     hdrlen = sdsHdrSize(type);
     // mybegin
     if (hdrlen+newlen+1 > HBM_HOT_SIZE){
-	printf("--size(%lu)>=hot_size(%lu),store in hbm", hdrlen+newlen+1, HBM_HOT_SIZE);
+	printf("--size(%lu)>=hot_size(%lu),store in hbm\n", hdrlen+newlen+1, HBM_HOT_SIZE);
 	// hbm的代码没有实现realloc函数
-        newsh = sram_malloc(hdrlen+newlen+1);
+        newsh = hbm_malloc(hdrlen+newlen+1);
         if (newsh == NULL) return NULL;
         memcpy((char*)newsh+hdrlen, s, len+1);
-	if(in_hbmspace(sh)) sram_free(sh);
+	if(in_hbmspace(sh)) hbm_free(sh);
 	else s_free(sh);
         s = (char*)newsh+hdrlen;
         s[-1] = type;
@@ -251,7 +251,7 @@ sds sdsMakeRoomFor(sds s, size_t addlen) {
             if (newsh == NULL) return NULL;
             memcpy((char*)newsh+hdrlen, s, len+1);
             // s_free(sh);
-	    if(in_hbmspace(sh)) sram_free(sh);
+	    if(in_hbmspace(sh)) hbm_free(sh);
 	    else s_free(sh);
             
 	    s = (char*)newsh+hdrlen;
