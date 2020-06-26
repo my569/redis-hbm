@@ -4969,6 +4969,9 @@ int iAmMaster(void) {
 int main(int argc, char **argv) {
     //mybegin
     //空间分配是使用了static固定数组
+    init_my_log();
+    my_log("%s\n", "start");
+    close_my_log();
     //myend
 
     struct timeval tv;
