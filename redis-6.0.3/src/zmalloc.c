@@ -724,7 +724,7 @@ int my_log(const char* fmt, ...){
     return 1;
 }
 
-int clear(){
+int close_my_log(){
     if(!fp) return 0;
     if(fp != stdout) fclose(fp);
     return 1;

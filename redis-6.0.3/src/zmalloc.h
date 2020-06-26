@@ -147,4 +147,9 @@ void hbm_free(void *ptr);
 void hbm_pools_dump();
 int in_hbmspace(void *ptr);
 
+//mylog
+int init_my_log();
+int my_log(const char* fmt, ...);
+int close_my_log();
+
 #endif
