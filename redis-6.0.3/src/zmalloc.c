@@ -696,5 +696,37 @@ void hbm_pools_dump()
 }
 
 
+// mylog
+#include <stdarg.h>
 
+FILE* fp = NULL;
+void* init_my_log(){
+    time_t t = time(NULL);
+    struct tm *tm_t;
+    char timestr[20];
+    tm_t = localtime(&t);
+    strftime(timestr,128,"%Y-%m-%d %H:%M",tm_t);
+
+    char filename[30];
+    sscanf(filename, "log_%s.txt", timestr);
+    fp = fopen("log.txt", "w");
+    return fp;
+}
+
+int my_log(const char* fmt, ...){
+    if(!fp) return 0;
+
+    va_list ap;
+    va_start(ap, fmt);
+    vfprintf(fp, fmt, ap);
+    va_end(ap);
+
+    return 1;
+}
+
+int clear(){
+    if(!fp) return 0;
+    if(fp != stdout) fclose(fp);
+    return 1;
+}
 
