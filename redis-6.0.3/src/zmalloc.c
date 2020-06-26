@@ -708,8 +708,9 @@ int init_my_log(){
     strftime(timestr,20,"%Y-%m-%d %H:%M",tm_t);
 
     char filename[30];
-    sscanf(filename, "log_%s.txt", timestr);
-    fp = fopen("log.txt", "w");
+    sprintf(filename, "log_%s.txt", timestr);
+    printf("mylog:%s\n", filename);
+    fp = fopen(filename, "w");
     return fp? 1 : 0;
 }
 
