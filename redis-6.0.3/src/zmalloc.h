@@ -117,14 +117,14 @@ int zmalloc_test(int argc, char **argv);
  * author:nejidev
  * date:2019-12-05
  */
-#ifndef __SRAM_H
-#define __SRAM_H
+#ifndef __HBM_H
+#define __HBM_H
 
 #include <stdio.h>
 
-#define SRAM_POOLS_CHUNK_SIZE (256)
+#define HBM_POOLS_CHUNK_SIZE (256)
 // 256M
-#define SRAM_POOLS_HEAP_SIZE  (256*1024*1024)														    
+#define HBM_POOLS_HEAP_SIZE  (256*1024*1024)														    
 
 #ifndef __HBM_MALLOC
 #define __HBM_MALLOC

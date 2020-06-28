@@ -3271,6 +3271,10 @@ void call(client *c, int flags) {
     dirty = server.dirty-dirty;
     if (dirty < 0) dirty = 0;
 
+    // mybegin
+    my_log("command: %s, start: %d, duration: %d\n", "test", start, duration);
+    // myend
+
     /* When EVAL is called loading the AOF we don't want commands called
      * from Lua to go into the slowlog or to populate statistics. */
     if (server.loading && c->flags & CLIENT_LUA)
@@ -4971,7 +4975,6 @@ int main(int argc, char **argv) {
     //空间分配是使用了static固定数组
     init_my_log();
     my_log("%s\n", "start");
-    close_my_log();
     //myend
 
     struct timeval tv;
@@ -5181,6 +5184,11 @@ int main(int argc, char **argv) {
     redisSetCpuAffinity(server.server_cpulist);
     aeMain(server.el);
     aeDeleteEventLoop(server.el);
+
+    // mybegin
+    close_my_log();
+    // myend
+
     return 0;
 }
 

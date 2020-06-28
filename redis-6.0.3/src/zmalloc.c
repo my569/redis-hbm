@@ -579,11 +579,11 @@ static size_t hbm_used_memory = 0;
 pthread_mutex_t hbm_used_memory_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 //static size_t hbm_memory = 0;
-static char mem[SRAM_POOLS_HEAP_SIZE] = {0};
+static char mem[HBM_POOLS_HEAP_SIZE] = {0};
 static hbm_mem_chunk *pools_mem_head = NULL;
 
 int in_hbmspace(void *ptr){
-    return (void*)mem <= ptr && ptr <= (void*)(mem + SRAM_POOLS_HEAP_SIZE);
+    return (void*)mem <= ptr && ptr <= (void*)(mem + HBM_POOLS_HEAP_SIZE);
 }
 
 static hbm_mem_chunk *hbm_pools_init()
@@ -594,17 +594,17 @@ static hbm_mem_chunk *hbm_pools_init()
 
     // 只有在pools_mem_hear为空时才会初始化内存，否之就是直接返回pools_mem_head
     if ( ! pools_mem_head ) {
-        chunk_total = SRAM_POOLS_HEAP_SIZE / ( sizeof(hbm_mem_chunk) +
-                                                SRAM_POOLS_CHUNK_SIZE );
+        chunk_total = HBM_POOLS_HEAP_SIZE / ( sizeof(hbm_mem_chunk) +
+                                                HBM_POOLS_CHUNK_SIZE );
         base_alloc = mem + chunk_total * sizeof(hbm_mem_chunk);
         pools_mem_head = (hbm_mem_chunk *)mem;
 
         for ( i = 0; i < chunk_total; i++ ) {
             pools_mem_head[i].alloc      = (void *)(base_alloc +
-                                                i * SRAM_POOLS_CHUNK_SIZE);
+                                                i * HBM_POOLS_CHUNK_SIZE);
             pools_mem_head[i].current    = i;
             pools_mem_head[i].alloc_size = 0;
-            pools_mem_head[i].chunk_size = SRAM_POOLS_CHUNK_SIZE;
+            pools_mem_head[i].chunk_size = HBM_POOLS_CHUNK_SIZE;
             pools_mem_head[i].cleanup    = 0;
             pools_mem_head[i].next       = ((i + 1) < chunk_total) ?
                                                 &pools_mem_head[i + 1] : NULL;
@@ -656,6 +656,7 @@ void *hbm_malloc(size_t size)
 
         mem_head = mem_head->next;
     }
+    my_log("hbm_malloc:%d\n", size);
 
     return ptr;
 }
@@ -666,6 +667,7 @@ void hbm_free(void *ptr)
     hbm_mem_chunk *mem_head = hbm_pools_init();
 
     if ( ! ptr ) return ;
+    my_log("hbm_free:%d\n", mem_head->alloc_size);//mem_head会被修改，所以更新日志放前面好了
 
     while ( mem_head ) {
         if ( mem_head->alloc == ptr && 0 < mem_head->cleanup ) {
@@ -703,12 +705,12 @@ FILE* fp = NULL;
 int init_my_log(){
     time_t t = time(NULL);
     struct tm *tm_t;
-    char timestr[20];
+    char timestr[50];
     tm_t = localtime(&t);
     strftime(timestr,20,"%Y-%m-%d %H:%M",tm_t);
 
-    char filename[30];
-    sprintf(filename, "log_%s.txt", timestr);
+    char filename[70];
+    sprintf(filename, "../data/log_%s.txt", timestr);
     printf("mylog:%s\n", filename);
     fp = fopen(filename, "w");
     return fp? 1 : 0;
