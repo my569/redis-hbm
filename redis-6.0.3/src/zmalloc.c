@@ -101,10 +101,20 @@ void *zmalloc(size_t size) {
     if (!ptr) zmalloc_oom_handler(size);
 #ifdef HAVE_MALLOC_SIZE
     update_zmalloc_stat_alloc(zmalloc_size(ptr));
+
+    // mybein
+    //my_log("zmalloc:%lld\n", zmalloc_size(ptr));
+    // myend
+    
     return ptr;
 #else
     *((size_t*)ptr) = size;
     update_zmalloc_stat_alloc(size+PREFIX_SIZE);
+    
+    // mybein
+    //my_log("zmalloc:%lld\n", size+PREFIX_SIZE);
+    // myend
+    
     return (char*)ptr+PREFIX_SIZE;
 #endif
 }
@@ -209,12 +219,21 @@ void zfree(void *ptr) {
 #ifdef HAVE_MALLOC_SIZE
     update_zmalloc_stat_free(zmalloc_size(ptr));
     free(ptr);
+
+    // mybein
+    //my_log("zfree:%lld\n", zmalloc_size(ptr));
+    // myend
 #else
     realptr = (char*)ptr-PREFIX_SIZE;
     oldsize = *((size_t*)realptr);
     update_zmalloc_stat_free(oldsize+PREFIX_SIZE);
     free(realptr);
+
+    // mybein
+    //my_log("zfree:%lld\n", oldsize+PREFIX_SIZE);
+    // myend
 #endif
+
 }
 
 char *zstrdup(const char *s) {
@@ -724,6 +743,9 @@ int my_log(const char* fmt, ...){
     vfprintf(fp, fmt, ap);
     va_end(ap);
 
+    va_start(ap, fmt);
+    vfprintf(stdout, fmt, ap);
+    va_end(ap);
     return 1;
 }
 

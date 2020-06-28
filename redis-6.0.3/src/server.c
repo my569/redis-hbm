@@ -3262,18 +3262,26 @@ void call(client *c, int flags) {
     redisOpArray prev_also_propagate = server.also_propagate;
     redisOpArrayInit(&server.also_propagate);
 
+
     /* Call the command. */
     dirty = server.dirty;
     updateCachedTime(0);
     start = server.ustime;
+    
+    // mybegin
+    my_log("command: %s, start: %lld\n", c->cmd->name, start);
+    // myend
+
     c->cmd->proc(c);
     duration = ustime()-start;
+    
+    // mybegin
+    my_log("command: %s, duration: %lld\n", c->cmd->name, duration);
+    // myend
+    
     dirty = server.dirty-dirty;
     if (dirty < 0) dirty = 0;
 
-    // mybegin
-    my_log("command: %s, start: %d, duration: %d\n", "test", start, duration);
-    // myend
 
     /* When EVAL is called loading the AOF we don't want commands called
      * from Lua to go into the slowlog or to populate statistics. */
@@ -4974,7 +4982,7 @@ int main(int argc, char **argv) {
     //mybegin
     //空间分配是使用了static固定数组
     init_my_log();
-    my_log("%s\n", "start");
+    my_log("%s\n", "start1");
     //myend
 
     struct timeval tv;

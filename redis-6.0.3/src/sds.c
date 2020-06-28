@@ -230,7 +230,7 @@ sds sdsMakeRoomFor(sds s, size_t addlen) {
     // mybegin
     if (hdrlen+newlen+1 > HBM_HOT_SIZE){
 	printf("addlen=%zd, newlen=%zd\n", addlen, newlen);
-	printf("--size(%llu)>=hot_size(%d),,store in hbm\n", (unsigned long long)(hdrlen+newlen+1), HBM_HOT_SIZE);
+	printf("--size(%llu)>=hot_size(%d),store in hbm\n", (unsigned long long)(hdrlen+newlen+1), HBM_HOT_SIZE);
 	// hbm的代码没有实现realloc函数
         newsh = hbm_malloc(hdrlen+newlen+1);
         if (newsh == NULL) return NULL;
