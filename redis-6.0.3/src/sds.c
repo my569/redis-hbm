@@ -227,6 +227,7 @@ sds sdsMakeRoomFor(sds s, size_t addlen) {
     if (type == SDS_TYPE_5) type = SDS_TYPE_8;
 
     hdrlen = sdsHdrSize(type);
+    //set_migrate();
     // mybegin
     if (hdrlen+newlen+1 > HBM_HOT_SIZE){
 	printf("addlen=%zd, newlen=%zd\n", addlen, newlen);

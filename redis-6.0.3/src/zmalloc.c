@@ -572,18 +572,7 @@ int zmalloc_test(int argc, char **argv) {
 
 /**
  * author:lmy
- *
  */
-
-
-
-/**
- * author:lmy
- */
-// #include "sram.h"
-//
-//static stack or physics memory address
-
 #define update_zmalloc_hbm_alloc(__n) do { \
     size_t _n = (__n); \
     atomicIncr(hbm_used_memory,__n); \
@@ -600,6 +589,12 @@ pthread_mutex_t hbm_used_memory_mutex = PTHREAD_MUTEX_INITIALIZER;
 //static size_t hbm_memory = 0;
 static char mem[HBM_POOLS_HEAP_SIZE] = {0};
 static hbm_mem_chunk *pools_mem_head = NULL;
+
+//全局变量
+int migrate_group_var = 0;
+pthread_mutex_t migrate_group_var_mutex = PTHREAD_MUTEX_INITIALIZER;
+extern static int migrate_data_group_var = 0;
+extern pthread_mutex_t migrate_data_group_var_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int in_hbmspace(void *ptr){
     return (void*)mem <= ptr && ptr <= (void*)(mem + HBM_POOLS_HEAP_SIZE);
@@ -702,6 +697,12 @@ void hbm_free(void *ptr)
 
         mem_head = mem_head->next;
     }
+}
+
+void *hbm_realloc(void *ptr, size_t size)
+{
+   hbm_free(ptr);
+   return hbm_malloc(size);
 }
 
 void hbm_pools_dump()

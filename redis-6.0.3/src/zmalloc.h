@@ -117,21 +117,48 @@ int zmalloc_test(int argc, char **argv);
  * author:nejidev
  * date:2019-12-05
  */
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include "atomicvar.h"
+
 #ifndef __HBM_H
 #define __HBM_H
 
-#include <stdio.h>
-
 #define HBM_POOLS_CHUNK_SIZE (256)
-// 256M
-#define HBM_POOLS_HEAP_SIZE  (256*1024*1024)														    
-
-#ifndef __HBM_MALLOC
-#define __HBM_MALLOC
-
+#define HBM_POOLS_HEAP_SIZE  (256*1024*1024) //256M
 #define HBM_HOT_SIZE 100
 
-#endif
+// migrate标志
+#define set_migrate() do { \
+    atomicSet(migrate_group_var ,__n); \
+} while(0)
+#define reset_migrate() do { \
+    atomicSet(migrate_group_var ,__n); \
+} while(0)
+extern int migrate_group_var;
+extern pthread_mutex_t migrate_group_var_mutex;
+static inline int canMigrate(){
+    int temp;
+    atomicGet(migrate_group_var, temp);
+    return temp == 1;
+}
+
+//migrate_data标志
+
+#define set_migratedata() do { \
+    atomicSet(migrate_data_group_var ,__n); \
+} while(0)
+#define reset_migratedata() do { \
+    atomicSet(migrate_data_group_var ,__n); \
+} while(0)
+extern static int migrate_data_group_var = 0;
+extern pthread_mutex_t migrate_data_group_var_mutex = PTHREAD_MUTEX_INITIALIZER;
+static inline int isMigrateData(){
+    int temp;
+    atomicGet(migrate_data_group_var, temp);
+    return temp == 1;
+}
 
 typedef struct hbm_mem_chunk {
 	void  *alloc;
@@ -144,12 +171,21 @@ typedef struct hbm_mem_chunk {
 
 void *hbm_malloc(size_t size);
 void hbm_free(void *ptr);
+void *hbm_realloc(void* ptr, size_t size);
 void hbm_pools_dump();
 int in_hbmspace(void *ptr);
+
+//inline static int canMigrate();
+//inline static int isMigrateData();
+
+#endif //__HBM_H
+
+#ifndef __LOG_H
+#define __LOG_H
 
 //mylog
 int init_my_log();
 int my_log(const char* fmt, ...);
 int close_my_log();
 
-#endif
+#endif //__LOG_H
