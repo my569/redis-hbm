@@ -146,14 +146,14 @@ static inline int canMigrate(){
 
 //migrate_data标志
 
-#define set_migratedata() do { \
+#define set_migrate_data() do { \
     atomicSet(migrate_data_group_var ,__n); \
 } while(0)
-#define reset_migratedata() do { \
+#define reset_migrate_data() do { \
     atomicSet(migrate_data_group_var ,__n); \
 } while(0)
-extern static int migrate_data_group_var = 0;
-extern pthread_mutex_t migrate_data_group_var_mutex = PTHREAD_MUTEX_INITIALIZER;
+extern int migrate_data_group_var;
+extern pthread_mutex_t migrate_data_group_var_mutex;
 static inline int isMigrateData(){
     int temp;
     atomicGet(migrate_data_group_var, temp);

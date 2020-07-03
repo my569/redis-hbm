@@ -593,8 +593,8 @@ static hbm_mem_chunk *pools_mem_head = NULL;
 //全局变量
 int migrate_group_var = 0;
 pthread_mutex_t migrate_group_var_mutex = PTHREAD_MUTEX_INITIALIZER;
-extern static int migrate_data_group_var = 0;
-extern pthread_mutex_t migrate_data_group_var_mutex = PTHREAD_MUTEX_INITIALIZER;
+int migrate_data_group_var = 0;
+pthread_mutex_t migrate_data_group_var_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int in_hbmspace(void *ptr){
     return (void*)mem <= ptr && ptr <= (void*)(mem + HBM_POOLS_HEAP_SIZE);
