@@ -131,10 +131,10 @@ int zmalloc_test(int argc, char **argv);
 
 // migrate标志
 #define set_migrate() do { \
-    atomicSet(migrate_group_var ,__n); \
+    atomicSet(migrate_group_var , 1); \
 } while(0)
 #define reset_migrate() do { \
-    atomicSet(migrate_group_var ,__n); \
+    atomicSet(migrate_group_var , 0); \
 } while(0)
 extern int migrate_group_var;
 extern pthread_mutex_t migrate_group_var_mutex;
@@ -147,10 +147,10 @@ static inline int canMigrate(){
 //migrate_data标志
 
 #define set_migrate_data() do { \
-    atomicSet(migrate_data_group_var ,__n); \
+    atomicSet(migrate_data_group_var , 1); \
 } while(0)
 #define reset_migrate_data() do { \
-    atomicSet(migrate_data_group_var ,__n); \
+    atomicSet(migrate_data_group_var , 0); \
 } while(0)
 extern int migrate_data_group_var;
 extern pthread_mutex_t migrate_data_group_var_mutex;
