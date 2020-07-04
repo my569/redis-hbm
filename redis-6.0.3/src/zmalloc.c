@@ -96,6 +96,12 @@ static void zmalloc_default_oom(size_t size) {
 static void (*zmalloc_oom_handler)(size_t) = zmalloc_default_oom;
 
 void *zmalloc(size_t size) {
+    // mybegin
+    if (canMigrate() && isMigrateData()){
+	return hbm_malloc(size);
+    }
+
+    // myend
     void *ptr = malloc(size+PREFIX_SIZE);
 
     if (!ptr) zmalloc_oom_handler(size);
@@ -157,6 +163,12 @@ void *zrealloc(void *ptr, size_t size) {
 #endif
     size_t oldsize;
     void *newptr;
+
+    // mybegin
+    if (canMigrate() && isMigrateData()){
+	return hbm_realloc(ptr,size);
+    }
+    // myend
 
     if (size == 0 && ptr != NULL) {
         zfree(ptr);
@@ -701,8 +713,16 @@ void hbm_free(void *ptr)
 
 void *hbm_realloc(void *ptr, size_t size)
 {
-   hbm_free(ptr);
-   return hbm_malloc(size);
+    my_log("hbm_realloc is used\n");
+    if (size == 0 && ptr != NULL){
+        hbm_free(ptr);
+        return NULL;
+    }
+    if (ptr == NULL){
+        return hbm_malloc(size);
+    }
+    hbm_free(ptr);
+    return hbm_malloc(size);
 }
 
 void hbm_pools_dump()
