@@ -44,6 +44,14 @@ endif
 endif
 endif
 
+#my_debug = 1
+##ifeq ($(my_debug), 1)
+#CFLAGS += -g3
+#CFLAGS += -gdwarf-2
+##endif
+
+	
+
 # To get ARM stack traces if Redis crashes we need a special C flag.
 ifneq (,$(filter aarch64 armv,$(uname_M)))
         CFLAGS+=-funwind-tables
@@ -76,7 +84,8 @@ endif
 FINAL_CFLAGS=$(STD) $(WARN) $(OPT) $(DEBUG) $(CFLAGS) $(REDIS_CFLAGS)
 FINAL_LDFLAGS=$(LDFLAGS) $(REDIS_LDFLAGS) $(DEBUG)
 FINAL_LIBS=-lm
-DEBUG=-g -ggdb
+DEBUG=-g3 -gdwarf-2 -ggdb
+#DEBUG=-g -ggdb
 
 # Linux ARM needs -latomic at linking time
 ifneq (,$(filter aarch64 armv,$(uname_M)))
